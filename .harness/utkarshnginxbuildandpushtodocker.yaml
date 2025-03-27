@@ -1,0 +1,67 @@
+pipeline:
+  name: utkarsh-nginx-build-and-push-to-docker
+  identifier: utkarshnginxbuildandpushtodocker
+  tags: {}
+  projectIdentifier: CIBootcamp
+  orgIdentifier: default
+  properties:
+    ci:
+      codebase:
+        connectorRef: utkarshgithubconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: nginx-build-and-push
+        identifier: nginxbuildandpush
+        description: clone the repo, install and create a local binary and then build a docker image and push it docker
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Install Nginx dependencies
+                  identifier: Install_Nginx_dependencies
+                  spec:
+                    shell: Sh
+                    command: |-
+                      apt update
+                      apt install -y gcc make
+
+                      apt install -y libpcre3-dev zlib1g-dev
+                      apt install -y libssl-dev
+              - step:
+                  type: Run
+                  name: Build Nginx Binary
+                  identifier: Build_Nginx_Binary
+                  spec:
+                    shell: Sh
+                    command: |-
+                      auto/configure
+                      make
+                      make install
+                      /usr/local/nginx/sbin/nginx
+                      curl localhost
+
+                      cp /usr/local/nginx/sbin/nginx /harness
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerImage
+                  identifier: BuildAndPushDockerImage
+                  spec:
+                    connectorRef: utkarshdockerconnector
+                    repo: utkarsh0harness0code/nginx
+                    tags:
+                      - utkarsh
+                    caching: true
