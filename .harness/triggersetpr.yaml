@@ -1,0 +1,14 @@
+inputSet:
+  name: trigger-set-pr
+  identifier: triggersetpr
+  orgIdentifier: default
+  projectIdentifier: CIBootcamp
+  pipeline:
+    identifier: utkarshnginxbuildandpushtodocker
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
