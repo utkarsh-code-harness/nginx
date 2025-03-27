@@ -63,5 +63,5 @@ pipeline:
                     connectorRef: utkarshdockerconnector
                     repo: utkarsh0harness0code/nginx
                     tags:
-                      - utkarsh
+                      - latest
                     caching: true
